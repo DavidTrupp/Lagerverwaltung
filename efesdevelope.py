@@ -1,0 +1,3 @@
+
+print ("value")
+print ("Auto")
