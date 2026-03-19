@@ -5,8 +5,8 @@
 # Verschiedenen Optionen für die Lagerverwaltung werden angezeigt.
 
 import tkinter as tk     # Ein GUI-Menü mit Tkinter
-# import efesdevelope as le                # Logik für die Lagerverwaltung
-# import logic_Harun as lh              # Logik für die Lagerverwaltung
+import efesdevelope as le                # Logik für die Lagerverwaltung
+import logic_Harun as lh              # Logik für die Lagerverwaltung
 # import sqlite3 as sql                   # Datenbank für die Lagerverwaltung
 # con = sql.connect("Lager.db")   # Verbindung zur Datenbank herstellen
 
@@ -16,14 +16,19 @@ def fenster_Artikel_hinzufugen():
         hinzufugen.geometry("300x500")
         tk.Label(hinzufugen, text="Bitte geben Sie die Artikelinformationen ein!").pack(pady=20)
         tk.Label(hinzufugen, text="Artikelname:").pack(pady=10)
-        tk.Entry(hinzufugen).pack(pady=10)
+        hinzufugen_Artikelname_entry = tk.Entry(hinzufugen).pack(pady=10)
         tk.Label(hinzufugen, text="Artikelnummer:").pack(pady=10)
-        tk.Entry(hinzufugen).pack(pady=10)
+        hinzufugen_Artikelnummer_entry = tk.Entry(hinzufugen).pack(pady=10)
         tk.Label(hinzufugen, text="Menge:").pack(pady=10)
-        tk.Entry(hinzufugen).pack(pady=10)
+        hinzufugen_Menge_entry = tk.Entry(hinzufugen).pack(pady=10)
         tk.Label(hinzufugen, text="Mindestbestand:").pack(pady=10)
-        tk.Entry(hinzufugen).pack(pady=10)
-        tk.Button(hinzufugen, text="Artikel hinzufügen", command=fenster_Artikel_hinzugefugt).pack(pady=20)
+        hinzufugen_Mindestbestand_entry = tk.Entry(hinzufugen).pack(pady=10)
+        tk.Button(hinzufugen, text="Artikel hinzufügen", command=le.article_exists).pack(pady=20)
+
+name = hinzufugen_Artikelname_entry.get()
+article_id = hinzufugen_Artikelnummer_entry.get()
+stock = hinzufugen_Menge_entry.get()
+minimum_stock = hinzufugen_Mindestbestand_entry.get()
 
 def fenster_Artikel_hinzugefugt(): 
         hinzugefugt = tk.Toplevel(root)
@@ -118,6 +123,5 @@ button3.pack(pady=10)
 button4 = tk.Button(root, text="Artikel ändern", command=fenster_Artikel_andern)
 button4.pack(pady=10)
 root.mainloop()
-
 
 
