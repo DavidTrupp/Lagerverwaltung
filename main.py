@@ -69,5 +69,3 @@ root.mainloop()
 
 
 
-
-
