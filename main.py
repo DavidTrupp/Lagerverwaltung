@@ -12,7 +12,8 @@ import logic_Harun as lh              # Logik für die Lagerverwaltung
 # con = sql.connect("Lager.db")   # Verbindung zur Datenbank herstellen
 
 #Memory-Datenstruktur für die Artikel
-products = []
+products = dict()  # Produkte werden in einem Dictionary gespeichert, um schnellen Zugriff auf Artikelinformationen zu ermöglichen
+products = []        
 
 def fenster_Artikel_hinzufugen():
         hinzufugen = tk.Toplevel(root)
@@ -68,7 +69,7 @@ def fenster_Artikel_hinzufugen():
                 else:
                         tk.messagebox.showerror("Fehler", message)
         
-        tk.Button(hinzufugen, text="Artikel hinzufügen", command=le.article_exists).pack(pady=20)
+        tk.Button(hinzufugen, text="Artikel hinzufügen", command=add_article).pack(pady=20)
 
 def fenster_Artikel_entfernen():
         entfernen = tk.Toplevel(root)
@@ -79,51 +80,72 @@ def fenster_Artikel_entfernen():
         artikel_entfernen_entry = tk.Entry(entfernen)
         artikel_entfernen_entry.pack(pady=10)
 
-        
+        def remove_article():
+                article_id = artikel_entfernen_entry.get().strip()
+                if not article_id:
+                        tk.messagebox.showerror("Fehler", "Die Artikelnummer muss eingegeben werden!")
+                        return
+                
+                if le.article_exists(products, article_id):
+                        # Hier wird die Logik zum Entfernen des Artikels eingefügt
+                        tk.messagebox.showinfo("Erfolg", f"Der Artikel mit der Artikelnummer {article_id} wurde gelöscht!")
+                        entfernen.destroy()  # Fenster schließen nach erfolgreichem Entfernen
+                else:
+                        tk.messagebox.showerror("Fehler", "Die Artikelnummer existiert nicht!")
 
-        tk.Button(entfernen, text="Artikel entfernen", command=fenster_Artikel_geloscht).pack(pady=20)
-
-def fenster_Artikel_geloscht():
-        geloscht = tk.Toplevel(root)
-        geloscht.title("Artikel gelöscht")
-        geloscht.geometry("200x60")
-        tk.Label(geloscht, text="Der Artikel + Artikelname + wurde gelöscht!").pack(pady=20)
+        tk.Button(entfernen, text="Artikel entfernen", command=remove_article).pack(pady=20)
 
 def fenster_Artikel_anzeigen():
         anzeigen = tk.Toplevel(root)
         anzeigen.title("Artikel anzeigen")
         anzeigen.geometry("400x200")
+
         tk.Label(anzeigen, text="Geben sie die Artikelnummer ein oder den Artikelnamen!").pack(pady=20)#
-        tk.Entry(anzeigen).pack(pady=10)
-        tk.Button(anzeigen, text="Artikel anzeigen", command=fenster_Artikel_angezeigt).pack(pady=20)
+        anzeigen_entry = tk.Entry(anzeigen)
+        anzeigen_entry.pack(pady=10)
+
+        def show_article():
+                search_term = anzeigen_entry.get().strip()
+                if not search_term:
+                        tk.messagebox.showerror("Fehler", "Bitte geben Sie eine Artikelnummer oder einen Artikelnamen ein!")
+                        return
+                
+                found_products = lh.search_products_by_name(products, search_term) or le.find_product_by_id(products, search_term)
+                if found_products:
+                        # Hier wird die Logik zum Anzeigen der gefundenen Artikel eingefügt
+                        fenster_Artikel_angezeigt()
+                        anzeigen.destroy()  # Fenster schließen nach erfolgreichem Anzeigen
+                else:
+                        tk.messagebox.showerror("Fehler", "Keine Artikel gefunden!")
+
+        tk.Button(anzeigen, text="Artikel anzeigen", command=show_article).pack(pady=20)
 
 def fenster_Artikel_angezeigt():
         angezeigt = tk.Toplevel(root)
         angezeigt.title("Artikel angezeigt")
         angezeigt.geometry("300x400")
-        tk.Label(angezeigt, text="Der Artikel + Artikelname + wurde angezeigt!").pack(pady=20)
-        tk.Label(angezeigt, text="Artikelname:").pack(pady=10)
-        tk.Label(angezeigt, text="artikelname").pack(pady=10)
-        tk.Label(angezeigt, text="Artikelnummer:").pack(pady=10)
-        tk.Entry(angezeigt).pack(pady=10)
-        tk.Label(angezeigt, text="Menge:").pack(pady=10)
-        tk.Entry(angezeigt).pack(pady=10)
-        tk.Label(angezeigt, text="Mindestbestand:").pack(pady=10)
-        tk.Entry(angezeigt).pack(pady=10)
-        tk.Button(angezeigt, text="Artikel hinzufügen", command=fenster_Artikel_hinzugefugt).pack(pady=20)
+        tk.Label(angezeigt, text="Artikeldetails:").pack(pady=20)
 
-# artikelname =
-# artikelnummer =
-# menge =
-# mindestbestand =
+        tk.Label(angezeigt, text="Artikelname:").pack(pady=10)
+        tk.Label(angezeigt, text=products["name"]).pack(pady=5)
+
+        tk.Label(angezeigt, text="Artikelnummer:").pack(pady=10)
+        tk.Label(angezeigt, text=products["article_id"]).pack(pady=5)
+
+        tk.Label(angezeigt, text="Menge:").pack(pady=10)
+        tk.Label(angezeigt, text=products["stock"]).pack(pady=5)
+
+        tk.Label(angezeigt, text="Mindestbestand:").pack(pady=10)
+        tk.Label(angezeigt, text=products["minimum_stock"]).pack(pady=5)
 
 def fenster_Artikel_andern():
         andern = tk.Toplevel(root)
         andern.title("Artikel ändern")
         andern.geometry("300x200")
         tk.Label(andern, text="Hier können Sie die Artikelinformationen ändern!").pack(pady=20)
-        global andern_artikelnummer
-        andern_artikelnummer = tk.Label(andern, text="Artikelnummer:").pack(pady=10)
+        #
+        tk.Label(andern, text="Artikelnummer:").pack(pady=10)
+
         tk.Entry(andern).pack(pady=10)
         tk.Button(andern, text="Artikel ändern", command=fenster_Artikel_geandert).pack(pady=20)
 
@@ -131,15 +153,15 @@ def fenster_Artikel_geandert():
         geandert = tk.Toplevel(root)
         geandert.title("Artikel geändert")
         geandert.geometry("200x400")
-        tk.Label(geandert, text="Artikeldaten ändern:").pack(pady=20)
-        tk.Label(geandert, text="Artikelname:").pack(pady=10)
-        tk.Label(geandert, text="artikelnummer").pack(pady=10)
-        tk.Label(geandert, text=andern_artikelnummer.get()).pack(pady=10)
-        tk.Entry(geandert).pack(pady=10)
-        tk.Label(geandert, text="Menge:").pack(pady=10)
-        tk.Entry(geandert).pack(pady=10)
-        tk.Label(geandert, text="Mindestbestand:").pack(pady=10)
-        tk.Entry(geandert).pack(pady=10)
+        # tk.Label(geandert, text="Artikeldaten ändern:").pack(pady=20)
+        # tk.Label(geandert, text="Artikelname:").pack(pady=10)
+        # tk.Label(geandert, text="artikelnummer").pack(pady=10)
+        # tk.Label(geandert, text=andern_artikelnummer.get()).pack(pady=10)
+        # tk.Entry(geandert).pack(pady=10)
+        # tk.Label(geandert, text="Menge:").pack(pady=10)
+        # tk.Entry(geandert).pack(pady=10)
+        # tk.Label(geandert, text="Mindestbestand:").pack(pady=10)
+        # tk.Entry(geandert).pack(pady=10)
 
 
 
