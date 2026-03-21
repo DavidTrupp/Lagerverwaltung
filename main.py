@@ -153,34 +153,61 @@ def fenster_Artikel_anzeigen():
                 
                         text.config(state=tk.DISABLED)  # Textfeld schreibgeschützt machen
 
-
 def fenster_Artikel_andern():
         andern = tk.Toplevel(root)
         andern.title("Artikel ändern")
-        andern.geometry("300x200")
+        andern.geometry("400x500")
         tk.Label(andern, text="Hier können Sie die Artikelinformationen ändern!").pack(pady=20)
-        #
+        
         tk.Label(andern, text="Artikelnummer:").pack(pady=10)
+        andern_artikelnummer = tk.Entry(andern)
+        andern_artikelnummer.pack(pady=10)
 
-        tk.Entry(andern).pack(pady=10)
-        tk.Button(andern, text="Artikel ändern", command=fenster_Artikel_geandert).pack(pady=20)
+        tk.Label(andern, text="Neue Menge:").pack(pady=10)
+        andern_menge = tk.Entry(andern)
+        andern_menge.pack(pady=10)
 
-def fenster_Artikel_geandert():
-        geandert = tk.Toplevel(root)
-        geandert.title("Artikel geändert")
-        geandert.geometry("200x400")
-        # tk.Label(geandert, text="Artikeldaten ändern:").pack(pady=20)
-        # tk.Label(geandert, text="Artikelname:").pack(pady=10)
-        # tk.Label(geandert, text="artikelnummer").pack(pady=10)
-        # tk.Label(geandert, text=andern_artikelnummer.get()).pack(pady=10)
-        # tk.Entry(geandert).pack(pady=10)
-        # tk.Label(geandert, text="Menge:").pack(pady=10)
-        # tk.Entry(geandert).pack(pady=10)
-        # tk.Label(geandert, text="Mindestbestand:").pack(pady=10)
-        # tk.Entry(geandert).pack(pady=10)
+        tk.Label(andern, text="Neuer Mindestbestand:").pack(pady=10)
+        andern_mindestbestand = tk.Entry(andern)
+        andern_mindestbestand.pack(pady=10)
 
+        def ander_article():
+                article_id = andern_artikelnummer.get().strip()
+                new_stock = andern_menge.get().strip()
+                new_minimum_stock = andern_mindestbestand.get().strip()
 
+                if not article_id:
+                        messagebox.showerror("Fehler", "Die Artikelnummer muss eingegeben werden!")
+                        return
+                
+                try:
+                        article_id = int(article_id)
+                except ValueError:
+                        messagebox.showerror("Fehler", "Die Artikelnummer muss eine ganze Zahl sein!")
+                        return
 
+                if new_stock == "" and new_minimum_stock == "":
+                        messagebox.showerror("Fehler", "Bitte geben Sie mindestens einen Wert zum Ändern ein!")
+                        return
+
+                try:
+                        new_stock = int(new_stock) if new_stock != "" else None
+                        new_minimum_stock = int(new_minimum_stock) if new_minimum_stock != "" else None
+                except ValueError:
+                        messagebox.showerror("Fehler", "Menge und Mindestbestand müssen ganze Zahlen sein!")
+                        return
+
+                success, message = le.update_product(products, article_id, stock=new_stock, minimum_stock=new_minimum_stock)
+
+                if success:
+                        messagebox.showinfo("Erfolg", message)
+                        andern.destroy()  # Fenster schließen nach erfolgreichem Ändern
+                else:
+                        messagebox.showerror("Fehler", message)
+
+        tk.Button(andern, text="Artikel ändern", command=ander_article).pack(pady=20)        
+
+# Main GUI-Fenster
 root = tk.Tk()
 root.title("Lagerverwaltung")
 root.geometry("400x300")
