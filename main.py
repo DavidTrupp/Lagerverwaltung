@@ -40,35 +40,31 @@ def fenster_Artikel_hinzufugen():
         def add_article():
                 name = hinzufugen_Artikelname_entry.get().strip()
                 article_id = hinzufugen_Artikelnummer_entry.get().strip()
-                stock = hinzufugen_Menge_entry.get()
-                minimum_stock = hinzufugen_Mindestbestand_entry.get()
-                le.add_article(name, article_id, stock, minimum_stock)
+                stock = hinzufugen_Menge_entry.get().strip()
+                minimum_stock = hinzufugen_Mindestbestand_entry.get().strip()
 
                 if not name or not article_id or not stock or not minimum_stock:
                         tk.messagebox.showerror("Fehler", "Alle Felder müssen ausgefüllt werden!")
                         return
                 
                 try:
-                        name = str(name)
-                except ValueError:
-                        tk.messagebox.showerror("Fehler", "Der Artikelname muss ein Text sein!")
-                        return
-                
-                try:
+                        article_id = int(article_id)
                         stock = int(stock)
                         minimum_stock = int(minimum_stock)
                 except ValueError:
-                        tk.messagebox.showerror("Fehler", "Menge und Mindestbestand müssen ganze Zahlen sein!")
+                        tk.messagebox.showerror("Fehler", "Artikelnummer,Menge und Mindestbestand müssen ganze Zahlen sein!")
                         return
-
-        # Nutze le.add_product funktion, um den Artikel hinzuzufügen
+                
                 success, message = le.add_product(products, article_id, name, stock, minimum_stock)
+                
                 if success:
-                        tk.messagebox.showinfo("Erfolg", message)
+                        messagebox.showinfo("Erfolg", message)
                         hinzufugen.destroy()  # Fenster schließen nach erfolgreichem Hinzufügen
                 else:
-                        tk.messagebox.showerror("Fehler", message)
-        
+                        messagebox.showerror("Fehler", message)
+
+        # Nutze le.add_product funktion, um den Artikel hinzuzufügen
+
         tk.Button(hinzufugen, text="Artikel hinzufügen", command=add_article).pack(pady=20)
 
 def fenster_Artikel_entfernen():
@@ -82,17 +78,25 @@ def fenster_Artikel_entfernen():
 
         def remove_article():
                 article_id = artikel_entfernen_entry.get().strip()
+
                 if not article_id:
-                        tk.messagebox.showerror("Fehler", "Die Artikelnummer muss eingegeben werden!")
+                        messagebox.showerror("Fehler", "Die Artikelnummer muss eingegeben werden!")
                         return
                 
-                if le.article_exists(products, article_id):
-                        # Hier wird die Logik zum Entfernen des Artikels eingefügt
-                        tk.messagebox.showinfo("Erfolg", f"Der Artikel mit der Artikelnummer {article_id} wurde gelöscht!")
+                try:
+                        article_id = int(article_id)
+                except ValueError:
+                        messagebox.showerror("Fehler", "Die Artikelnummer muss eine ganze Zahl sein!")
+                        return
+
+                success, message = le.remove_product(products, article_id)
+
+                if success:
+                        messagebox.showinfo("Erfolg", message)
                         entfernen.destroy()  # Fenster schließen nach erfolgreichem Entfernen
                 else:
-                        tk.messagebox.showerror("Fehler", "Die Artikelnummer existiert nicht!")
-
+                        messagebox.showerror("Fehler", message)
+                
         tk.Button(entfernen, text="Artikel entfernen", command=remove_article).pack(pady=20)
 
 def fenster_Artikel_anzeigen():
