@@ -4,12 +4,10 @@
 
 # Verschiedenen Optionen für die Lagerverwaltung werden angezeigt.
 
-import tkinter as tk     # Ein GUI-Menü mit Tkinter
-import tkinter.messagebox as messagebox   # Fehlermeldungen anzeigen
+import tkinter as tk     # Ein GUI-Menü mit Tkinter erstellt, um die verschiedenen Funktionen der Lagerverwaltung zugänglich zu machen über Buttons, die jeweils ein neues Fenster öffnen, um Artikel hinzuzufügen, zu entfernen, anzuzeigen oder zu ändern
+import tkinter.messagebox as messagebox   # Fehlermeldungen oder erfolge anzuzeigen ohne ein neues Fenster zu öffnen, sondern direkt im Hauptfenster
 import efesdevelope as le                # Logik für die Lagerverwaltung
 import logic_Harun as lh              # Logik für die Lagerverwaltung
-# import sqlite3 as sql                   # Datenbank für die Lagerverwaltung
-# con = sql.connect("Lager.db")   # Verbindung zur Datenbank herstellen
 
 #Memory-Datenstruktur für die Artikel
 products = dict()  # Produkte werden in einem Dictionary gespeichert, um schnellen Zugriff auf Artikelinformationen zu ermöglichen
