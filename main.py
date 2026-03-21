@@ -89,7 +89,7 @@ def fenster_Artikel_entfernen():
                         messagebox.showerror("Fehler", "Die Artikelnummer muss eine ganze Zahl sein!")
                         return
 
-                success, message = le.remove_product(products, article_id)
+                success, message = le.delete_product(products, article_id)
 
                 if success:
                         messagebox.showinfo("Erfolg", message)
@@ -109,38 +109,50 @@ def fenster_Artikel_anzeigen():
         anzeigen_entry.pack(pady=10)
 
         def show_article():
-                search_term = anzeigen_entry.get().strip()
-                if not search_term:
-                        tk.messagebox.showerror("Fehler", "Bitte geben Sie eine Artikelnummer oder einen Artikelnamen ein!")
+                value = anzeigen_entry.get().strip()
+                if not value:
+                        messagebox.showerror("Fehler", "Bitte geben Sie eine Artikelnummer oder einen Artikelnamen ein!")
                         return
                 
-                found_products = lh.search_products_by_name(products, search_term) or le.find_product_by_id(products, search_term)
-                if found_products:
-                        # Hier wird die Logik zum Anzeigen der gefundenen Artikel eingefügt
-                        fenster_Artikel_angezeigt()
-                        anzeigen.destroy()  # Fenster schließen nach erfolgreichem Anzeigen
+                result = []
+                # ID-Suche
+                try:
+                        article_id = int(value)
+                        product = le.find_product_by_id(products, article_id)
+                        if product:
+                                result = [product]
+                except:
+                        pass
+                # Namenssuche
+                if not result:
+                        result = lh.search_products_by_name(products, value)
+
+                if result:
+                        fenster_Artikel_angezeigt(result)
+                        fenster_Artikel_anzeigen.destroy()  # Fenster schließen nach erfolgreichem Anzeigen
                 else:
-                        tk.messagebox.showerror("Fehler", "Keine Artikel gefunden!")
+                        messagebox.showerror("Fehler", "Kein Artikel mit dieser Artikelnummer oder diesem Namen gefunden!")
 
         tk.Button(anzeigen, text="Artikel anzeigen", command=show_article).pack(pady=20)
 
-def fenster_Artikel_angezeigt():
-        angezeigt = tk.Toplevel(root)
-        angezeigt.title("Artikel angezeigt")
-        angezeigt.geometry("300x400")
-        tk.Label(angezeigt, text="Artikeldetails:").pack(pady=20)
+        def fenster_Artikel_angezeigt(results):
+                angezeigt = tk.Toplevel(root)
+                angezeigt.title("Artikel angezeigt")
+                angezeigt.geometry("400x200")
 
-        tk.Label(angezeigt, text="Artikelname:").pack(pady=10)
-        tk.Label(angezeigt, text=products["name"]).pack(pady=5)
+                text = tk.Text(angezeigt, width=50, height=15)
+                text.pack()
 
-        tk.Label(angezeigt, text="Artikelnummer:").pack(pady=10)
-        tk.Label(angezeigt, text=products["article_id"]).pack(pady=5)
+                for p in results:
+                        text.insert(tk.END, 
+                            f"Artikelname: {p['name']}\n"
+                            f"Artikelnummer: {p['article_id']}\n"
+                            f"Menge: {p['stock']}\n"
+                            f"Mindestbestand: {p['minimum_stock']}\n"
+                            "---------------\n")
+                
+                        text.config(state=tk.DISABLED)  # Textfeld schreibgeschützt machen
 
-        tk.Label(angezeigt, text="Menge:").pack(pady=10)
-        tk.Label(angezeigt, text=products["stock"]).pack(pady=5)
-
-        tk.Label(angezeigt, text="Mindestbestand:").pack(pady=10)
-        tk.Label(angezeigt, text=products["minimum_stock"]).pack(pady=5)
 
 def fenster_Artikel_andern():
         andern = tk.Toplevel(root)
