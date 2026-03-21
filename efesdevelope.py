@@ -73,3 +73,42 @@ def find_product_by_id(products, article_id):
             return product
         
     return None
+
+
+
+
+
+
+
+
+def show_products(products):
+    """
+    Zeigt alle Artikel in Tabellenform an
+
+    Wenn keine Artikel vorhanden sind, wird Meldung ausgegeben
+    Sonst immer alle Produkte dargestellt 
+    """
+
+    if len(products) == 0:
+        print("Keine Artikel im Lager vorhanden.") #Wenn keine Artikel existieren in der Liste wird die Funktion beendet
+        return
+    
+
+    """
+    Artikelnummer 15 Zeichen Platz
+    Name 20
+    Bestand 12
+    Mindestbestand 15 
+    Werte mögen nicht sinnvoll erscheinen, aber sorgen für übersichtliche Ausgabe 
+    """
+    print ("\n=== Lagerbestand ===")
+    print(f"{'Artikelnummer':<15}{'Bezeichnung':<20}{'Bestand':<12}{'Mindestbestand':<15}")
+    print("-" * 62)
+
+    for product in products: 
+        print(
+            f"{product['article_id']:<15}"
+            f"{product['name']:<20}"
+            f"{product['stock']:<12}"
+            f"{product['minimum_stock']:<15}"
+        )
