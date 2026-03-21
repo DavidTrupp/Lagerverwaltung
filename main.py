@@ -5,38 +5,82 @@
 # Verschiedenen Optionen für die Lagerverwaltung werden angezeigt.
 
 import tkinter as tk     # Ein GUI-Menü mit Tkinter
+import tkinter.messagebox as messagebox   # Fehlermeldungen anzeigen
 import efesdevelope as le                # Logik für die Lagerverwaltung
 import logic_Harun as lh              # Logik für die Lagerverwaltung
 # import sqlite3 as sql                   # Datenbank für die Lagerverwaltung
 # con = sql.connect("Lager.db")   # Verbindung zur Datenbank herstellen
+
+#Memory-Datenstruktur für die Artikel
+products = []
 
 def fenster_Artikel_hinzufugen():
         hinzufugen = tk.Toplevel(root)
         hinzufugen.title("Artikel hinzufügen")
         hinzufugen.geometry("300x500")
         tk.Label(hinzufugen, text="Bitte geben Sie die Artikelinformationen ein!").pack(pady=20)
-        tk.Label(hinzufugen, text="Artikelname:").pack(pady=10)
-        hinzufugen_Artikelname_entry = tk.Entry(hinzufugen).pack(pady=10)
-        tk.Label(hinzufugen, text="Artikelnummer:").pack(pady=10)
-        hinzufugen_Artikelnummer_entry = tk.Entry(hinzufugen).pack(pady=10)
-        tk.Label(hinzufugen, text="Menge:").pack(pady=10)
-        hinzufugen_Menge_entry = tk.Entry(hinzufugen).pack(pady=10)
-        tk.Label(hinzufugen, text="Mindestbestand:").pack(pady=10)
-        hinzufugen_Mindestbestand_entry = tk.Entry(hinzufugen).pack(pady=10)
-        tk.Button(hinzufugen, text="Artikel hinzufügen", command=le.article_exists).pack(pady=20)
 
-def fenster_Artikel_hinzugefugt(): 
-        hinzugefugt = tk.Toplevel(root)
-        hinzugefugt.title("Artikel hinzugefügt")
-        hinzugefugt.geometry("200x60")
-        tk.Label(hinzugefugt, text="Der Artikel wurde hinzugefügt!").pack(pady=20)
+        tk.Label(hinzufugen, text="Artikelname:").pack(pady=10)
+        hinzufugen_Artikelname_entry = tk.Entry(hinzufugen)
+        hinzufugen_Artikelname_entry.pack(pady=10)
+
+        tk.Label(hinzufugen, text="Artikelnummer:").pack(pady=10)
+        hinzufugen_Artikelnummer_entry = tk.Entry(hinzufugen)
+        hinzufugen_Artikelnummer_entry.pack(pady=10)
+
+        tk.Label(hinzufugen, text="Menge:").pack(pady=10)
+        hinzufugen_Menge_entry = tk.Entry(hinzufugen)
+        hinzufugen_Menge_entry.pack(pady=10)
+
+        tk.Label(hinzufugen, text="Mindestbestand:").pack(pady=10)
+        hinzufugen_Mindestbestand_entry = tk.Entry(hinzufugen)
+        hinzufugen_Mindestbestand_entry.pack(pady=10)
+
+        def add_article():
+                name = hinzufugen_Artikelname_entry.get().strip()
+                article_id = hinzufugen_Artikelnummer_entry.get().strip()
+                stock = hinzufugen_Menge_entry.get()
+                minimum_stock = hinzufugen_Mindestbestand_entry.get()
+                le.add_article(name, article_id, stock, minimum_stock)
+
+                if not name or not article_id or not stock or not minimum_stock:
+                        tk.messagebox.showerror("Fehler", "Alle Felder müssen ausgefüllt werden!")
+                        return
+                
+                try:
+                        name = str(name)
+                except ValueError:
+                        tk.messagebox.showerror("Fehler", "Der Artikelname muss ein Text sein!")
+                        return
+                
+                try:
+                        stock = int(stock)
+                        minimum_stock = int(minimum_stock)
+                except ValueError:
+                        tk.messagebox.showerror("Fehler", "Menge und Mindestbestand müssen ganze Zahlen sein!")
+                        return
+
+        # Nutze le.add_product funktion, um den Artikel hinzuzufügen
+                success, message = le.add_product(products, article_id, name, stock, minimum_stock)
+                if success:
+                        tk.messagebox.showinfo("Erfolg", message)
+                        hinzufugen.destroy()  # Fenster schließen nach erfolgreichem Hinzufügen
+                else:
+                        tk.messagebox.showerror("Fehler", message)
+        
+        tk.Button(hinzufugen, text="Artikel hinzufügen", command=le.article_exists).pack(pady=20)
 
 def fenster_Artikel_entfernen():
         entfernen = tk.Toplevel(root)
         entfernen.title("Artikel entfernen")
         entfernen.geometry("400x200")
         tk.Label(entfernen, text="Bitte geben Sie die Artikelnummer ein!").pack(pady=20)
-        tk.Entry(entfernen).pack(pady=10)
+
+        artikel_entfernen_entry = tk.Entry(entfernen)
+        artikel_entfernen_entry.pack(pady=10)
+
+        
+
         tk.Button(entfernen, text="Artikel entfernen", command=fenster_Artikel_geloscht).pack(pady=20)
 
 def fenster_Artikel_geloscht():
