@@ -22,20 +22,40 @@ def article_exists(products, article_id):
 
 
 """
+Prüft, ob Produktname bereits existiert
+Neuer Produktname wird mit der Liste der Produktnamen verglichen (case-insensitiv)
+
+True -> Produktname existiert bereits
+False -> Produktname ist noch frei
+
+Verhindert doppelte Produktnamen beim Hinzufügen neuer Artikel
+"""
+def product_name_exists(products, name):
+    name_lower = name.lower()
+    for product in products:
+        if product["name"].lower() == name_lower:
+            return True
+    return False
+
+
+"""
 Fügt neuen Artikel zur Liste hinzu
 
-Prüft zuerst, ob Artikelnummer schon vergeben ist
+Prüft zuerst, ob Artikelnummer oder Produktname schon vergeben sind
 Ja -> Fehlermeldung
 Nein -> Artikel wird erstellt und hinzugefügt zur Liste
 
 Rückgabe:
 True -> Artikel wurde erfolgreich hinzugefügt
-False -> Artikelnummer ist bereits vorhanden
+False -> Artikelnummer oder Produktname ist bereits vorhanden
 """
 def add_product(products, article_id, name, stock, minimum_stock):
 
     if article_exists(products, article_id):
         return False, "Artikelnummer bereits vorhanden, andere wählen bitte"
+    
+    if product_name_exists(products, name):
+        return False, "Produktname bereits vorhanden, anderen Namen wählen bitte"
 
     new_product = {
         "article_id": article_id,
@@ -168,3 +188,33 @@ def show_products(products):
             f"{product['stock']:<12}"
             f"{product['minimum_stock']:<15}"
         )
+
+
+"""
+Sucht Artikel nach Artikelnummer oder Produktname
+
+Funktion sucht in Produktliste und vergleicht entweder:
+1. Artikelnummer 
+2. Produktname 
+
+Rückgabe:
+- Bei 'id' Suche: list mit einem oder null Produkten
+- Bei 'name' Suche: list mit allen gefundenen Produkten
+"""
+def search_products(products, search_type, search_value):
+    results = []
+    
+    if search_type.lower() == 'id':
+        # Suche nach Artikelnummer (exakte Übereinstimmung)
+        for product in products:
+            if str(product["article_id"]) == str(search_value):
+                results.append(product)
+    
+    elif search_type.lower() == 'name':
+        # Suche nach Produktname (Teilübereinstimmung, case-insensitiv)
+        search_value_lower = str(search_value).lower()
+        for product in products:
+            if search_value_lower in product["name"].lower():
+                results.append(product)
+    
+    return results
