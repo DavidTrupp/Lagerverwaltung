@@ -25,11 +25,6 @@ def fenster_Artikel_hinzufugen():
         hinzufugen_Mindestbestand_entry = tk.Entry(hinzufugen).pack(pady=10)
         tk.Button(hinzufugen, text="Artikel hinzufügen", command=le.article_exists).pack(pady=20)
 
-name = hinzufugen_Artikelname_entry.get()
-article_id = hinzufugen_Artikelnummer_entry.get()
-stock = hinzufugen_Menge_entry.get()
-minimum_stock = hinzufugen_Mindestbestand_entry.get()
-
 def fenster_Artikel_hinzugefugt(): 
         hinzugefugt = tk.Toplevel(root)
         hinzugefugt.title("Artikel hinzugefügt")
