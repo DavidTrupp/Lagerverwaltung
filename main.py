@@ -43,11 +43,11 @@ def fenster_Artikel_hinzufugen():
                 stock = hinzufugen_Menge_entry.get().strip()
                 minimum_stock = hinzufugen_Mindestbestand_entry.get().strip()
 
-                if not name or not article_id or not stock or not minimum_stock:
+                if not name or not article_id or not stock or not minimum_stock:        #überprüft, ob alle Felder ausgefüllt sind, bevor der Artikel hinzugefügt wird
                         tk.messagebox.showerror("Fehler", "Alle Felder müssen ausgefüllt werden!")
                         return
                 
-                try:
+                try:    #versucht die Artikelnummer, Menge und Mindestbestand in ganze Zahlen umzuwandeln, um sicherzustellen, dass die Eingaben gültig sind
                         article_id = int(article_id)
                         stock = int(stock)
                         minimum_stock = int(minimum_stock)
@@ -57,7 +57,7 @@ def fenster_Artikel_hinzufugen():
                 
                 success, message = le.add_product(products, article_id, name, stock, minimum_stock)
                 
-                if success:
+                if success: #zeigt eine Erfolgsmeldung an, wenn der Artikel erfolgreich hinzugefügt wurde, und schließt das Fenster nach dem Hinzufügen
                         messagebox.showinfo("Erfolg", message)
                         hinzufugen.destroy()  # Fenster schließen nach erfolgreichem Hinzufügen
                 else:
@@ -79,11 +79,11 @@ def fenster_Artikel_entfernen():
         def remove_article():
                 article_id = artikel_entfernen_entry.get().strip()
 
-                if not article_id:
+                if not article_id: #überprüft, ob die Artikelnummer eingegeben wurde, bevor versucht wird, den Artikel zu entfernen
                         messagebox.showerror("Fehler", "Die Artikelnummer muss eingegeben werden!")
                         return
                 
-                try:
+                try: #versucht die Artikelnummer in eine ganze Zahl umzuwandeln, um sicherzustellen, dass die Eingabe gültig ist
                         article_id = int(article_id)
                 except ValueError:
                         messagebox.showerror("Fehler", "Die Artikelnummer muss eine ganze Zahl sein!")
@@ -91,7 +91,7 @@ def fenster_Artikel_entfernen():
 
                 success, message = le.delete_product(products, article_id)
 
-                if success:
+                if success: #zeigt eine Erfolgsmeldung an, wenn der Artikel erfolgreich entfernt wurde, und schließt das Fenster nach dem Entfernen
                         messagebox.showinfo("Erfolg", message)
                         entfernen.destroy()  # Fenster schließen nach erfolgreichem Entfernen
                 else:
@@ -110,13 +110,13 @@ def fenster_Artikel_anzeigen():
 
         def show_article():
                 value = anzeigen_entry.get().strip()
-                if not value:
+                if not value: #überprüft, ob eine Artikelnummer oder ein Artikelname eingegeben wurde, bevor versucht wird, den Artikel anzuzeigen
                         messagebox.showerror("Fehler", "Bitte geben Sie eine Artikelnummer oder einen Artikelnamen ein!")
                         return
                 
                 result = []
                 # ID-Suche
-                try:
+                try: #versucht die Eingabe als Artikelnummer zu interpretieren, um den Artikel anhand der ID zu suchen. Wenn die Eingabe keine gültige Zahl ist, wird eine Fehlermeldung angezeigt
                         article_id = int(value)
                         product = le.find_product_by_id(products, article_id)
                         if product:
@@ -124,10 +124,10 @@ def fenster_Artikel_anzeigen():
                 except:
                         pass
                 # Namenssuche
-                if not result:
+                if not result: #wenn die ID-Suche kein Ergebnis geliefert hat, wird die Eingabe als Artikelname interpretiert und die Suche anhand des Namens durchgeführt
                         result = lh.search_products_by_name(products, value)
 
-                if result:
+                if result: #wenn entweder die ID-Suche oder die Namenssuche ein Ergebnis geliefert hat, wird das Ergebnis in einem neuen Fenster angezeigt, andernfalls wird eine Fehlermeldung angezeigt
                         fenster_Artikel_angezeigt(result)
                         fenster_Artikel_anzeigen.destroy()  # Fenster schließen nach erfolgreichem Anzeigen
                 else:
@@ -143,7 +143,7 @@ def fenster_Artikel_anzeigen():
                 text = tk.Text(angezeigt, width=50, height=15)
                 text.pack()
 
-                for p in results:
+                for p in results: #durchläuft die Liste der gefundenen Produkte und fügt die Informationen jedes Produkts in das Textfeld ein, um sie anzuzeigen
                         text.insert(tk.END, 
                             f"Artikelname: {p['name']}\n"
                             f"Artikelnummer: {p['article_id']}\n"
@@ -176,21 +176,21 @@ def fenster_Artikel_andern():
                 new_stock = andern_menge.get().strip()
                 new_minimum_stock = andern_mindestbestand.get().strip()
 
-                if not article_id:
+                if not article_id: #überprüft, ob die Artikelnummer eingegeben wurde, bevor versucht wird, den Artikel zu ändern        
                         messagebox.showerror("Fehler", "Die Artikelnummer muss eingegeben werden!")
                         return
                 
-                try:
+                try: #versucht die Artikelnummer in eine ganze Zahl umzuwandeln, um sicherzustellen, dass die Eingabe gültig ist
                         article_id = int(article_id)
                 except ValueError:
                         messagebox.showerror("Fehler", "Die Artikelnummer muss eine ganze Zahl sein!")
                         return
 
-                if new_stock == "" and new_minimum_stock == "":
+                if new_stock == "" and new_minimum_stock == "": #überprüft, ob mindestens eine der beiden Felder (Menge oder Mindestbestand) ausgefüllt ist, bevor versucht wird, den Artikel zu ändern
                         messagebox.showerror("Fehler", "Bitte geben Sie mindestens einen Wert zum Ändern ein!")
                         return
 
-                try:
+                try: #versucht die neue Menge und den neuen Mindestbestand in ganze Zahlen umzuwandeln, wenn sie eingegeben wurden, um sicherzustellen, dass die Eingaben gültig sind. Wenn eines der Felder leer ist, wird es als None behandelt, damit die update_product Funktion weiß, dass dieser Wert nicht geändert werden soll
                         new_stock = int(new_stock) if new_stock != "" else None
                         new_minimum_stock = int(new_minimum_stock) if new_minimum_stock != "" else None
                 except ValueError:
@@ -199,7 +199,7 @@ def fenster_Artikel_andern():
 
                 success, message = le.update_product(products, article_id, stock=new_stock, minimum_stock=new_minimum_stock)
 
-                if success:
+                if success: #zeigt eine Erfolgsmeldung an, wenn der Artikel erfolgreich geändert wurde, und schließt das Fenster nach dem Ändern
                         messagebox.showinfo("Erfolg", message)
                         andern.destroy()  # Fenster schließen nach erfolgreichem Ändern
                 else:
