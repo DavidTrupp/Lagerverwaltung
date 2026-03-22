@@ -175,4 +175,3 @@ Beispiel:
   "stock": 33,
   "minimum_stock": 10
 }
-
