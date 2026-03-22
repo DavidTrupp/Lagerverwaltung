@@ -2,16 +2,16 @@
 # Datum: 18.03.2026
 # Kurzbeschreibung: Menü
 
-import tkinter as tk
-import tkinter.messagebox as messagebox
-import efesdevelope as le
-import logic_Harun as lh
+import tkinter as tk # GUI-Bibliothek zum erstellen von Fenstern und Interaktionen
+import tkinter.messagebox as messagebox # Modul für Dialogfenster (Fehler, Informationen)
+import efesdevelope as le # Eigenes Modul mit Lagerverwaltungsfunktionen (EFE: Lagerverwaltung)
+import logic_Harun as lh # Eigenes Modul mit zusätzlichen Funktionen (HARUN: Lagerverwaltungserweiterungen)
 
 # Memory-Datenstruktur für die Artikel
 products = []
 
 
-def fenster_Artikel_hinzufugen():
+def fenster_Artikel_hinzufugen(): 
         hinzufugen = tk.Toplevel(root)
         hinzufugen.title("Artikel hinzufügen")
         hinzufugen.geometry("300x500")
@@ -33,7 +33,7 @@ def fenster_Artikel_hinzufugen():
         hinzufugen_Mindestbestand_entry = tk.Entry(hinzufugen)
         hinzufugen_Mindestbestand_entry.pack(pady=10)
 
-        def add_article():
+        def add_article(): # EFE: Artikel hinzufügen mit Validierung
                 name = hinzufugen_Artikelname_entry.get().strip()
                 article_id = hinzufugen_Artikelnummer_entry.get().strip()
                 stock = hinzufugen_Menge_entry.get().strip()
@@ -87,7 +87,7 @@ def fenster_Artikel_entfernen():
         artikel_entfernen_entry = tk.Entry(entfernen)
         artikel_entfernen_entry.pack(pady=10)
 
-        def remove_article():
+        def remove_article(): # EFE: Artikel entfernen mit Validierung
                 article_id = artikel_entfernen_entry.get().strip()
 
                 if not article_id:
@@ -127,7 +127,7 @@ def fenster_Artikel_anzeigen():
         anzeigen_entry = tk.Entry(anzeigen)
         anzeigen_entry.pack(pady=10)
 
-        def fenster_Artikel_angezeigt(results):
+        def fenster_Artikel_angezeigt(results): # EFE: Artikel anzeigen Fenster
                 angezeigt = tk.Toplevel(root)
                 angezeigt.title("Artikel angezeigt")
                 angezeigt.geometry("450x300")
@@ -147,7 +147,7 @@ def fenster_Artikel_anzeigen():
 
                 text.config(state=tk.DISABLED)
 
-        def show_article():
+        def show_article(): # EFE: Artikel suchen und anzeigen mit Validierung
                 value = anzeigen_entry.get().strip()
 
                 if not value:
@@ -204,7 +204,7 @@ def fenster_Artikel_andern():
         andern_mindestbestand = tk.Entry(andern)
         andern_mindestbestand.pack(pady=10)
 
-        def ander_article():
+        def ander_article(): # EFE: Artikel ändern mit Validierung
                 article_id = andern_artikelnummer.get().strip()
                 new_stock = andern_menge.get().strip()
                 new_minimum_stock = andern_mindestbestand.get().strip()
@@ -260,7 +260,7 @@ def fenster_Bestand_erhoehen():
         menge_entry = tk.Entry(erhoehen)
         menge_entry.pack(pady=10)
 
-        def increase():
+        def increase(): # HARUN: Bestand erhöhen mit Validierung
                 article_id = artikelnummer_entry.get().strip()
                 amount = menge_entry.get().strip()
 
