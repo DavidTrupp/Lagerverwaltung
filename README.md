@@ -11,7 +11,6 @@ Das Programm wurde im Team von Efe Yücel, David Trupp und Harun Smriko entwicke
 Die Anwendung ermöglicht es dem Benutzer, Artikel anzulegen, zu bearbeiten, zu löschen und zu durchsuchen. Dabei wird besonders darauf geachtet, dass keine doppelten Artikelnummern oder Produktnamen vergeben werden.
 
 ---
-
 ### Funktionen: 
 
 Das Programm bietet folgende Hauptfunktionen:
